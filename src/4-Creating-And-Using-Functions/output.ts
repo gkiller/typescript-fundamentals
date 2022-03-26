@@ -1,3 +1,5 @@
+import { productsURL } from "../lib";
+
 const prefix = '🐉 ';
 
 //  Custom type
@@ -11,13 +13,84 @@ type ProductType = {
 
 export default async function updateOutput(id: string){
 
+    //  Get products and await for response
+    const products = await getProducts();
 
+    //  Output
+    const output    = document.querySelector(`#${id}`);
+    const html      = layoutProducts(products);
+
+    //  
+    if( output && html ){
+
+        output.innerHTML = html;
+    }
 }
 
 
+//  Output to DOM
+function layoutProducts(products: ProductType[]){
+
+    //  Can use destructuring to get the properties that are needed
+    const items = products.map( ( {id, icon, name} ) => {
+
+        const productHTML = `
+
+            <span class="card-id">#${id}</span>
+            <i class="card-icon ${icon} fa-lg"></i>
+            <span class="card-name">${name}</span>
+        `;
+
+        const cardHTML= `
+
+            <li>
+                <div class="card">
+                    <div class="card-content">
+                        <div class="content">
+                            ${productHTML}
+                        </div>
+                    </div>
+                </div>
+            </li>
+        `;
+
+        return cardHTML;
+    });
+
+
+    //  Add to ul
+    let productsHTML = `<ul>${items.join('')}</ul>`;
+
+    return productsHTML;
+}       
+
+
+
+
+//  Async/await call
+//  await will wait for the response in the fetch call
+//  This requires the function to be prefixed with async.
+//
+//  Note how getProducts is a Promise of ProductType[] defined below.
+//  Even though it is implicitly known, it will be added explicitly to getProducts
+async function getProducts(): Promise<ProductType[]>{
+
+    //  Type is Promise of type Response
+    const response: Response = await fetch(productsURL);
+
+    //  Hover over json() and it is a Promise of type any.  This
+    //  indicates that it is asynchronous and needs an await
+    const products: ProductType[] = await response.json();
+
+    return products;
+}
+
+
+
+//  Output sample code
 runTheLearningSamples()
 
-
+ 
 //  Function definitions
 function runTheLearningSamples(){
 
@@ -116,7 +189,65 @@ function runTheLearningSamples(){
     }
 
 
-    displayProducts(sampleProducts)
+    displayProducts(sampleProducts);
+
+
+    //  Ch. 7: Optional params
+    //  Using object desctructuring
+    const {floor, random} = Math;
+    const getRandomInt = (max:number) => floor(random() * max);
+
+    //  By default this returns an object, but will be modified to return
+    //  a ProductType.
+    function createProduct(name: string, icon?: string): ProductType{
+
+        const id = getRandomInt(1000);
+
+        return{
+            id, name, icon
+        }
+    }
+
+
+    console.log(`$prefix} Optional params`);
+
+    let pineapple   = createProduct('pineapple', 'pineapple.jpg');
+    let mango       = createProduct('mango');
+
+    console.log(pineapple, mango);
+    
+    
+    //  Ch.9: Rest params
+    function buildAddress(street: string, city: string, ...restOfAddress: string[]){
+
+        console.table(...restOfAddress);
+
+        const address = `${street} ${city} ${restOfAddress.join(' ')}`;
+        return address;
+    }
+
+    const thisAddress = buildAddress('123 Any St', 'Anycity', 'Suite 100', '90210', 'USA');
+
+    console.log(`${prefix} Rest parameters`);
+    console.log(thisAddress);
+
+
+
+    //  Ch. 10: Parameter destructuring { ... }
+    //  See other examples above.
+    function displayProduct({id, name}: ProductType) : void{
+
+        console.log(`${prefix} Destructuring parameters`);
+        console.log(`Product id: ${id} and name: ${name}`);
+    }
+    
+    //  Get product
+    const thisProduct = getProductById(10);
+    
+    if( thisProduct ){
+
+        displayProduct(thisProduct)
+    }
 }
 
 
