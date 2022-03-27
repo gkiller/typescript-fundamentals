@@ -1,9 +1,10 @@
 import { getProducts, Product } from '../lib';
 
 export default async function updateOutput(id: string) {
-  const products = await getProducts();
-  const output = document.querySelector(`#${id}`);
-  const html = layoutProducts(products);
+
+    const products  = await getProducts();
+    const output    = document.querySelector(`#${id}`);
+    const html      = layoutProducts(products);
 
   if (output && html) {
     output.innerHTML = html;

@@ -1,29 +1,38 @@
-export interface Product {
-  id: number;
-  name: string;
-  icon: string;
-  description?: string;
-  validate(): boolean;
+export interface Product{
+
+    id: number,
+    name: string,
+    icon: string,
+    description?: string,
+    validate(): boolean
 }
 
-// Examples of using a type alias
-type ProductAlias =
-  | string
-  | number
-  | {
-      id: number;
-      name: string;
-      icon: string;
-      description?: string;
-    };
+//  Type alias with union
+type ProductAlias = string | {
 
-let product: ProductAlias = 'Food';
-
-// Using a type alias versus an enum
-enum ProductType {
-  Sporting,
-  Home,
+    id: number,
+    name: string,
+    icon: string,
+    description?: string
 }
 
-type ProductTypeList = 'SPORTING' | 'HOME';
-let p: ProductTypeList = 'SPORTING';
+
+//  Init
+let tProduct: ProductAlias = {
+
+    id: 1,
+    name: 'string',
+    icon: 'yo',
+    description: 'oeodhf'
+}
+
+
+//  Init string only
+let ta: ProductAlias = 'yyuu';
+
+
+//  Alternative to enums
+//  Variables must be in the list noted below
+type EnumAlt = 'Option' | 'No Option';
+
+let p: EnumAlt = 'No Option'
